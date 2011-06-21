@@ -12,8 +12,10 @@
 
 volatile uint16_t wavepos = 0;
 
-char* son  = "on ";
-char* soff = "off";
+char*       son = "playing ";
+char*      soff = "stopped ";
+char* btn_start = "[start] [    ]";
+char* btn_stop = "[     ] [stop]";
 
 void init(void);
 void timerCtrl(unsigned);

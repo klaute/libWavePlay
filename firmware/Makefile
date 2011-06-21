@@ -202,7 +202,7 @@ AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
 # reports about avrdude. See <http://savannah.nongnu.org/projects/avrdude> 
 # to submit bug reports.
 #AVRDUDE_VERBOSE = -v -v
-AVRDUDE_VERBOSE = -v
+AVRDUDE_VERBOSE = #-v
 
 AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
 AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
@@ -306,12 +306,14 @@ end:
 
 # Display size of file.
 HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).hex
-ELFSIZE = $(SIZE) -A $(TARGET).elf
+#ELFSIZE = $(SIZE) -A $(TARGET).elf
+ELFSIZE = $(SIZE) --mcu=$(MCU) -C $(TARGET).elf
+OBJSIZE = $(SIZE) -x *.o 
 sizebefore:
-	@if [ -f $(TARGET).elf ]; then echo; echo $(MSG_SIZE_BEFORE); $(ELFSIZE); echo; fi
+	@if [ -f $(TARGET).elf ]; then echo; echo $(MSG_SIZE_BEFORE); $(ELFSIZE); echo; $(HEXSIZE); echo; fi
 
 sizeafter:
-	@if [ -f $(TARGET).elf ]; then echo; echo $(MSG_SIZE_AFTER); $(ELFSIZE); echo; fi
+	@if [ -f $(TARGET).elf ]; then echo; echo $(MSG_SIZE_AFTER); $(ELFSIZE); $(OBJSIZE); echo; $(HEXSIZE); echo; fi
 
 
 

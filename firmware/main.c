@@ -13,25 +13,41 @@ int main(void) {
     lcd_gotoxy(0,0);
     lcd_putstr(soff);
 
+    lcd_gotoxy(0,1);
+    lcd_putstr(btn_start);
+    
     //uint16_t cnt = 0;
 
     do {
 
         if ( mm_btnchk(PC0) ) {
+            
+            lcd_gotoxy(0,1);
+            lcd_putstr(btn_stop);
 
+            _delay_ms(10);
+            
             lcd_gotoxy(0,0);
             lcd_putstr(son);
-
+            
             timerCtrl(1);
             timerCtrl(4);
 
         } else if ( mm_btnchk(PC1) ) {
 
+            lcd_gotoxy(0,1);
+            lcd_putstr(btn_start);
+
+            _delay_ms(10);
+        
             lcd_gotoxy(0,0);
             lcd_putstr(soff);
+            
+            lcd_gotoxy(0,1);
+            
             timerCtrl(0);
-
             timerCtrl(3);
+
         }
 
         /* Lesetest des wav im progmem. * /
@@ -50,9 +66,9 @@ int main(void) {
             cnt = 0;
         */
 
-        _delay_ms(50);
+        //_delay_ms(50);
 
-        mm_LEDCode(2); // toggle status led
+        //mm_LEDCode(2); // toggle status led
 
     } while (1==1);
 
@@ -130,10 +146,9 @@ void timerCtrl(unsigned stat)
                 break;
             case 1:
                 // Timer starten
-                TCCR0A = 0x00;
                 // Fast PWM, nicht invertierter Output an OC1A und OC1B
                 TCCR0A |= (1<<COM0A1) | (1<<COM0B1) | (1<<WGM00) | (1<<WGM01);
-                TCCR0B |= (1<<CS00); // Prescaler = 1
+                TCCR0B |= (1<<CS00);
                 OCR0A = 128;
                 OCR0B = 128;
                 break;
@@ -150,7 +165,6 @@ void timerCtrl(unsigned stat)
                 break;
             case 4:
                 // Timer starten
-                TCCR2A = 0x00;
                 TCCR2A |= (1<<WGM21); // CTC
                 TCCR2B |= (1<<CS21); // Prescaler = 8
                 break;
@@ -204,8 +218,8 @@ ISR (TIMER2_COMPA_vect)
         lcd_gotoxy(0,0);
         lcd_putstr(soff);
         
-        lcd_gotoxy(0,0);
-        lcd_putstr(soff);
+        lcd_gotoxy(0,1);
+        lcd_putstr(btn_start);
 
     } else {
 
@@ -213,10 +227,10 @@ ISR (TIMER2_COMPA_vect)
         OCR0A = val; // Neuen Vergleichswert festlegen
         OCR0B = val;
         
-        lcd_gotoxy(0,1);
+        /*lcd_gotoxy(0,1);
         char sval[10];
         utoa( val, sval, 10 );
-        lcd_putstr(sval);
+        lcd_putstr(sval);*/
 
     }
 
