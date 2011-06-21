@@ -1,2 +1,11 @@
 firmware/.dep
 audio
+firmware/main.eep
+firmware/main.elf
+firmware/main.hex
+firmware/main.lss
+firmware/main.lst
+firmware/main.map
+firmware/main.o
+firmware/main.sym
+firmware/wavedata.c
