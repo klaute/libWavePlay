@@ -27,7 +27,7 @@ echo "$OUTNOHEADER generated..."
 
 
 cp $OUTNOHEADER data.wav
-xxd -i data.wav > wavedata.c
+xxd -i data.wav | sed -e "s/unsigned char/prog_char/ig" | sed -e "s/wav_data/data_wav/ig" > wavedata.c
 rm data.wav
 
 echo "wavedata.c generated..."

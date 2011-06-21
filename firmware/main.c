@@ -50,9 +50,9 @@ int main(void) {
             cnt = 0;
         */
 
-        _delay_ms(25);
+        _delay_ms(50);
 
-        //mm_LEDCode(2); // toggle status led
+        mm_LEDCode(2); // toggle status led
 
     } while (1==1);
 
@@ -75,7 +75,7 @@ void init(void)
     // Initialisieren von Pin5 an PortB als Ausgang,
     // zum ansteuern des Summers.
     DDRB &= ~( 1 << PB5 ); // OC0B
-    DDRB &= ~( 1 << PB6 ); // OC0A
+    //DDRB &= ~( 1 << PB6 ); // OC0A
 
     // LED einschalten
     PORTB |= ( 1 << PB2 ); 
@@ -103,7 +103,7 @@ void init(void)
     // Es soll eine Interrupt ausgeloest werden wenn ein Overflow auftritt oder
     // der Vergleichswert erreicht wurde.
     TIMSK0 = 0x00; // Normale Operation des Timer1
-    TIMSK0 = (1 << OCIE0A) | (1 << TOIE0); // Timer für die Tonausgabe, ISR zum debuggen
+    //TIMSK0 = (1 << OCIE0A) | (1 << TOIE0); // Timer für die Tonausgabe, ISR zum debuggen
     TIMSK2 = (1 << OCIE2A); // Timer für das auslesen der Samples
 
     OCR0A = 128;
@@ -131,7 +131,8 @@ void timerCtrl(unsigned stat)
             case 1:
                 // Timer starten
                 TCCR0A = 0x00;
-                TCCR0A |= (1<<COM0A1) | (1<<COM0B1) | (1<<WGM00) | (1<<WGM01); // Fast PWM, nnicht invertierter Output an OC1A und OC1B
+                // Fast PWM, nicht invertierter Output an OC1A und OC1B
+                TCCR0A |= (1<<COM0A1) | (1<<COM0B1) | (1<<WGM00) | (1<<WGM01);
                 TCCR0B |= (1<<CS00); // Prescaler = 1
                 OCR0A = 128;
                 OCR0B = 128;
