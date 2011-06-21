@@ -1,14 +1,18 @@
 
-main.c,140
+main.c,214
 int main(void) {main5,42
-void init(void)init32,406
-void timerCtrl(unsigned stat)timerCtrl87,1565
-ISR (TIMER1_COMPA_vect)ISR112,2231
+void init(void)init63,1004
+void timerCtrl(unsigned stat)timerCtrl122,2374
+ISR (TIMER0_OVF_vect)ISR170,3825
+ISR (TIMER0_COMPA_vect)ISR176,3932
+ISR (TIMER2_COMPA_vect)ISR192,4154
 
-wavedata.c,99
-unsigned char data_wav[] = {data_wav1,0
-unsigned int data_wav_len = 5898;data_wav_len495,36403
+wavedata.c,107
+PROGMEM unsigned char data_wav[] = {data_wav1,0
+unsigned int data_wav_len = 5898;data_wav_len495,36411
 
-main.h,69
+main.h,134
 #define F_CPU F_CPU2,1
-volatile uint16_t wavepos = 0;wavepos7,72
+volatile uint16_t wavepos = 0;wavepos13,190
+char* son  = "on ";son15,222
+char* soff = "off";soff16,242
