@@ -8,4 +8,4 @@ firmware/main.lst
 firmware/main.map
 firmware/main.o
 firmware/main.sym
-firmware/wavedata.c
+firmware/wavedata*.c

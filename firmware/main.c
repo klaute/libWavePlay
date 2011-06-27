@@ -1,14 +1,31 @@
-
+/* (C) Copyright 2011 Kai Lauterbach klaute at web.de
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+ 
 #include "main.h"
-#include "wavedata.c"
 
 int main(void) {
 
-    init();
+    init(); // init hardware
 
+    // clear display
     _delay_ms(0xff);
     lcd_clearDisplay();
 
+    // print out the "user interface"
     _delay_ms(0xff);
     lcd_gotoxy(0,0);
     lcd_putstr(soff);
@@ -18,10 +35,11 @@ int main(void) {
     
     //uint16_t cnt = 0;
 
+    unsigned tmpPlaying = 0;
+    
     do {
-
-        if ( mm_btnchk(PC0) ) {
-            
+    
+        if ( lw_isPlaying() == 1 && lw_isPlaying() != tmpPlaying ) {
             lcd_gotoxy(0,1);
             lcd_putstr(btn_stop);
 
@@ -30,11 +48,9 @@ int main(void) {
             lcd_gotoxy(0,0);
             lcd_putstr(son);
             
-            timerCtrl(1);
-            timerCtrl(4);
-
-        } else if ( mm_btnchk(PC1) ) {
-
+            tmpPlaying = lw_isPlaying();
+            
+        } else if ( lw_isPlaying() == 0 && lw_isPlaying() != tmpPlaying ) {
             lcd_gotoxy(0,1);
             lcd_putstr(btn_start);
 
@@ -43,32 +59,21 @@ int main(void) {
             lcd_gotoxy(0,0);
             lcd_putstr(soff);
             
-            lcd_gotoxy(0,1);
+            tmpPlaying = lw_isPlaying();
             
-            timerCtrl(0);
-            timerCtrl(3);
+        }
+    
+        // check if button 1 is pressed
+        if ( mm_btnchk(PC0) ) {
+
+            lw_Play(0);
+            
+        } // check if button 2 is pressed
+        else if ( mm_btnchk(PC1) ) {
+
+            lw_Stop();
 
         }
-
-        /* Lesetest des wav im progmem. * /
-        uint8_t val = pgm_read_byte(&data_wav[cnt]);
-
-        char sval[10];
-        lcd_gotoxy(0,1);
-        utoa( val, sval, 16 );
-        lcd_putstr(sval);
-        lcd_gotoxy(5,1);
-        utoa( cnt, sval, 10 );
-        lcd_putstr(sval);
-
-        cnt++;
-        if (cnt >= data_wav_len)
-            cnt = 0;
-        */
-
-        //_delay_ms(50);
-
-        //mm_LEDCode(2); // toggle status led
 
     } while (1==1);
 
@@ -88,11 +93,6 @@ void init(void)
     PORTC = 0x00;
     PORTD = 0x00;
 
-    // Initialisieren von Pin5 an PortB als Ausgang,
-    // zum ansteuern des Summers.
-    DDRB &= ~( 1 << PB5 ); // OC0B
-    //DDRB &= ~( 1 << PB6 ); // OC0A
-
     // LED einschalten
     PORTB |= ( 1 << PB2 ); 
 
@@ -102,139 +102,18 @@ void init(void)
     DDRC &= ( ~( 1 << PC1 ) );
     DDRC &= ( ~( 1 << PC0 ) );
  
-    // Die PullUp-Widerst�nde f�r die Taster einschalten.
+    // Enable all PullUp-Resistors on all Ports which are connected to a button.
     PORTC |= ( 1 << PC3 );
     PORTC |= ( 1 << PC2 );
     PORTC |= ( 1 << PC1 );
     PORTC |= ( 1 << PC0 );
 
-    // Timer0 initialisieren
-    TCCR0A = 0x00;
-    TCCR0B = 0x00;
- 
-    // Timer2 initialisieren
-    TCCR2A = 0x00;
-    TCCR2B = 0x00;
- 
-    // Es soll eine Interrupt ausgeloest werden wenn ein Overflow auftritt oder
-    // der Vergleichswert erreicht wurde.
-    TIMSK0 = 0x00; // Normale Operation des Timer1
-    //TIMSK0 = (1 << OCIE0A) | (1 << TOIE0); // Timer für die Tonausgabe, ISR zum debuggen
-    TIMSK2 = (1 << OCIE2A); // Timer für das auslesen der Samples
-
-    OCR0A = 128;
-    OCR0B = 128;
-    OCR2A = 250; // Samplingrate = 8kHz; Prescaler = 8; F_CPU = 16 MHz
-
-    TCNT0 = 1;
-    TCNT2 = 1;
-
     lcd_init();
 
+    lw_init();
+    
     sei(); // Interrupts aktivieren.
 
 }
 
-void timerCtrl(unsigned stat)
-{
-        switch ( stat )
-        {
-            case 0 :
-                // Timer stoppen
-                TCCR0A = 0x00;
-                TCCR0B = 0x00;
-                break;
-            case 1:
-                // Timer starten
-                // Fast PWM, nicht invertierter Output an OC1A und OC1B
-                TCCR0A |= (1<<COM0A1) | (1<<COM0B1) | (1<<WGM00) | (1<<WGM01);
-                TCCR0B |= (1<<CS00);
-                OCR0A = 128;
-                OCR0B = 128;
-                break;
-            case 2: // Toggle des Timers
-                if ( TCCR0B & (1 << CS00) )
-                    timerCtrl(0); // abschalten
-                else
-                    timerCtrl(1); // anschalten
-                break;
-            case 3 :
-                // Timer stoppen
-                TCCR2A = 0x00;
-                TCCR2B = 0x00;
-                break;
-            case 4:
-                // Timer starten
-                TCCR2A |= (1<<WGM21); // CTC
-                TCCR2B |= (1<<CS21); // Prescaler = 8
-                break;
-            case 5: // Toggle des Timers
-                if ( TCCR2B & (1 << CS21) )
-                    timerCtrl(3); // abschalten
-                else
-                    timerCtrl(4); // anschalten
-                break;
-            default:
-                timerCtrl(0);
-                timerCtrl(3);
-        }
-}
-
-
-
-ISR (TIMER0_OVF_vect)
-{
-//    mm_BeepCode(0); // Summer Pin ein
-    mm_LEDCode(1); // toggle status led
-}
-
-ISR (TIMER0_COMPA_vect)
-{
-    // ueberlauf des Timers (TIMER0)
-//    mm_BeepCode(1);
-    mm_LEDCode(0);
-}
-
-/*
-ISR (TIMER0_COMPB_vect)
-{
-    // ueberlauf des Timers (TIMER0)
-    //mm_BeepCode(2);
-    //mm_LEDCode(2);
-}
-*/
-
-ISR (TIMER2_COMPA_vect)
-{
-    // Hier das neue Sample laden und die Ausgabe einleiten
-    wavepos++;
-
-    if (wavepos >= data_wav_len) {
-
-        wavepos = 0; // fuer die Endlosschleife und den neustart
-        timerCtrl(0);
-        timerCtrl(3);
-
-        lcd_gotoxy(0,0);
-        lcd_putstr(soff);
-        
-        lcd_gotoxy(0,1);
-        lcd_putstr(btn_start);
-
-    } else {
-
-        uint8_t val = pgm_read_byte(&data_wav[wavepos]);
-        OCR0A = val; // Neuen Vergleichswert festlegen
-        OCR0B = val;
-        
-        /*lcd_gotoxy(0,1);
-        char sval[10];
-        utoa( val, sval, 10 );
-        lcd_putstr(sval);*/
-
-    }
-
-    //mm_LEDCode(2);
-    
-}
 
