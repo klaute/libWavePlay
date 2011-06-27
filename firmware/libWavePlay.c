@@ -65,52 +65,43 @@ void lwp_Stop() {
            
 void _lwp_timerCtrl(unsigned stat)
 {
-        switch ( stat )
-        {
-            case LWP_STOP_TIMER0 :
+        if (stat == LWP_STOP_TIMER0) {
                 // Timer stoppen
                 TCCR0A = 0x00;
                 TCCR0B = 0x00;
-                break;
-            case LWP_START_TIMER0:
+        } else if (stat == LWP_START_TIMER0) {
                 // Timer starten
                 // Fast PWM, nicht invertierter Output an OC1A und OC1B
                 TCCR0A |= (1<<COM0A1) | (1<<COM0B1) | (1<<WGM00) | (1<<WGM01);
                 TCCR0B |= (1<<CS00);
                 OCR0A = 128;
                 OCR0B = 128;
-                break;
-            case LWP_TOGGLE_TIMER0: // Toggle des Timers
+        } else if (stat == LWP_TOGGLE_TIMER0) { // Toggle des Timers
                 if ( TCCR0B & (1 << CS00) )
                     _lwp_timerCtrl(LWP_STOP_TIMER0); // abschalten
                 else
                     _lwp_timerCtrl(LWP_START_TIMER0); // anschalten
-                break;
-            case LWP_STOP_TIMER2 :
+        } else if (stat == LWP_STOP_TIMER2 ) {
                 // Timer stoppen
                 TCCR2A = 0x00;
                 TCCR2B = 0x00;
-                break;
-            case LWP_START_TIMER2:
+        } else if (stat == LWP_START_TIMER2 ) {
                 // Timer starten
                 TCCR2A |= (1<<WGM21); // CTC
                 TCCR2B |= (1<<CS21); // Prescaler = 8
-                break;
-            case LWP_TOGGLE_TIMER2: // Toggle des Timers
+        } else if (stat == LWP_TOGGLE_TIMER2) { // Toggle des Timers
                 if ( TCCR2B & (1 << CS21) )
                     _lwp_timerCtrl(LWP_STOP_TIMER2); // abschalten
                 else
                     _lwp_timerCtrl(LWP_START_TIMER2); // anschalten
-                break;
-            case LWP_START_ALL_TIMER: // start all
+        } else if (stat == LWP_START_ALL_TIMER) { // start all
                 _lwp_timerCtrl(LWP_START_TIMER0);
                 _lwp_timerCtrl(LWP_START_TIMER2);
-                break;
-            case LWP_STOP_ALL_TIMER: // stop all
+
+        } else if (stat == LWP_STOP_ALL_TIMER) { // stop all
                 _lwp_timerCtrl(LWP_STOP_TIMER0);
                 _lwp_timerCtrl(LWP_STOP_TIMER2);
-                break;
-            default:
+        } else {
                 // stop all
                 _lwp_timerCtrl(LWP_STOP_TIMER0);
                 _lwp_timerCtrl(LWP_STOP_TIMER2);
@@ -144,11 +135,7 @@ void lwp_init() {
 
     TCNT0 = 1;
     TCNT2 = 1;
-    
-#if WAVE_SOURCE == SRC_EEPROM
-    // read the eeprom wave length from eeprom
-    data_wave_len = eeprom_read_byte(eep_data_wave_len);
-#endif
+
     sei();
 
 }

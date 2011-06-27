@@ -21,7 +21,10 @@
 
 #define BOARD_MINIMEXLE   1
 #define BOARD_OTHER       2
+
+#ifndef AVR_BOARD
 #define AVR_BOARD BOARD_MINIMEXLE
+#endif
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>

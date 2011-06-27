@@ -32,7 +32,9 @@
 #define SRC_FLASH           1
 #define SRC_EEPROM          2
 
+#ifndef WAVE_SOURCE
 #define WAVE_SOURCE SRC_FLASH
+#endif
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
@@ -65,7 +67,7 @@ volatile uint16_t _lwp_wavePos   = 0;
 volatile unsigned _lwp_isPlaying = 0;
 
 #if WAVE_SOURCE == SRC_EEPROM
-volatile uint16_t data_wave_len;
+volatile uint16_t data_wave_len = EEP_WAVE_DATA_SIZE;
 EEMEM uint8_t data_wav[EEP_WAVE_DATA_SIZE];
 #endif
 

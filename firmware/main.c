@@ -41,7 +41,9 @@ int main(void) {
     
     do {
     
-        if ( lwp_isPlaying() == 1 && lwp_isPlaying() != tmpPlaying ) {
+        unsigned tmpPlayingCmp = lwp_isPlaying();
+    
+        if ( tmpPlayingCmp == 1 && tmpPlayingCmp != tmpPlaying ) {
 #if AVR_BOARD == BOARD_MINIMEXLE
             lcd_gotoxy(0,1);
             lcd_putstr(btn_stop);
@@ -52,9 +54,9 @@ int main(void) {
             lcd_putstr(son);
 #endif
             
-            tmpPlaying = lwp_isPlaying();
+            tmpPlaying = tmpPlayingCmp;
             
-        } else if ( lwp_isPlaying() == 0 && lwp_isPlaying() != tmpPlaying ) {
+        } else if ( tmpPlayingCmp == 0 && tmpPlayingCmp != tmpPlaying ) {
 #if AVR_BOARD == BOARD_MINIMEXLE
             lcd_gotoxy(0,1);
             lcd_putstr(btn_start);
@@ -65,7 +67,7 @@ int main(void) {
             lcd_putstr(soff);
 #endif
             
-            tmpPlaying = lwp_isPlaying();
+            tmpPlaying = tmpPlayingCmp;
             
         }
     
@@ -93,6 +95,7 @@ int main(void) {
         _delay_ms(100);
         _delay_ms(100);
         _delay_ms(100);
+        
         lwp_Play(0); // start playing
     }
 #endif
