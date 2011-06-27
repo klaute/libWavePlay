@@ -19,7 +19,9 @@
 #include "libWavePlay.c"
 #endif
 
+#if WAVE_SOURCE == SRC_FLASH
 #include "wavedata.c" // include the wavefile data
+#endif
 
 unsigned lwp_isPlaying() {
   return _lwp_isPlaying;
@@ -59,12 +61,12 @@ void _lwp_timerCtrl(unsigned stat)
 {
         switch ( stat )
         {
-            case 0 :
+            case LWP_STOP_TIMER0 :
                 // Timer stoppen
                 TCCR0A = 0x00;
                 TCCR0B = 0x00;
                 break;
-            case 1:
+            case LWP_START_TIMER0:
                 // Timer starten
                 // Fast PWM, nicht invertierter Output an OC1A und OC1B
                 TCCR0A |= (1<<COM0A1) | (1<<COM0B1) | (1<<WGM00) | (1<<WGM01);
@@ -72,39 +74,40 @@ void _lwp_timerCtrl(unsigned stat)
                 OCR0A = 128;
                 OCR0B = 128;
                 break;
-            case 2: // Toggle des Timers
+            case LWP_TOGGLE_TIMER0: // Toggle des Timers
                 if ( TCCR0B & (1 << CS00) )
-                    _lwp_timerCtrl(0); // abschalten
+                    _lwp_timerCtrl(LWP_STOP_TIMER0); // abschalten
                 else
-                    _lwp_timerCtrl(1); // anschalten
+                    _lwp_timerCtrl(LWP_START_TIMER0); // anschalten
                 break;
-            case 3 :
+            case LWP_STOP_TIMER2 :
                 // Timer stoppen
                 TCCR2A = 0x00;
                 TCCR2B = 0x00;
                 break;
-            case 4:
+            case LWP_START_TIMER2:
                 // Timer starten
                 TCCR2A |= (1<<WGM21); // CTC
                 TCCR2B |= (1<<CS21); // Prescaler = 8
                 break;
-            case 5: // Toggle des Timers
+            case LWP_TOGGLE_TIMER2: // Toggle des Timers
                 if ( TCCR2B & (1 << CS21) )
-                    _lwp_timerCtrl(3); // abschalten
+                    _lwp_timerCtrl(LWP_STOP_TIMER2); // abschalten
                 else
-                    _lwp_timerCtrl(4); // anschalten
+                    _lwp_timerCtrl(LWP_START_TIMER2); // anschalten
                 break;
             case LWP_START_ALL_TIMER: // start all
-                _lwp_timerCtrl(1);
-                _lwp_timerCtrl(4);
+                _lwp_timerCtrl(LWP_START_TIMER0);
+                _lwp_timerCtrl(LWP_START_TIMER2);
                 break;
             case LWP_STOP_ALL_TIMER: // stop all
-                _lwp_timerCtrl(0);
-                _lwp_timerCtrl(3);
+                _lwp_timerCtrl(LWP_STOP_TIMER0);
+                _lwp_timerCtrl(LWP_STOP_TIMER2);
                 break;
             default:
-                _lwp_timerCtrl(0);
-                _lwp_timerCtrl(3);
+                // stop all
+                _lwp_timerCtrl(LWP_STOP_TIMER0);
+                _lwp_timerCtrl(LWP_STOP_TIMER2);
         }
 }
 
@@ -153,8 +156,13 @@ ISR (TIMER2_COMPA_vect)
         
     } else {
     
+#if WAVE_SOURCE == SRC_EEPROM
+        uint8_t val = eeprom_read_byte(&data_wav[_lwp_wavePos]);
+#endif
+#if WAVE_SOURCE == SRC_FLASH
         // Ein Byte nach dem anderen aus dem FLASH auslesen.
         uint8_t val = pgm_read_byte(&data_wav[_lwp_wavePos]);
+#endif
         
         OCR0A = val; // Neuen Vergleichswert festlegen
         OCR0B = val;
