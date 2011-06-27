@@ -1,6 +1,7 @@
 firmware/.dep
 audio
 firmware/*.o
+firmware/*.lst
 firmware/main.eep
 firmware/main.elf
 firmware/main.hex
