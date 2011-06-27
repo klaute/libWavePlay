@@ -34,15 +34,15 @@
 # mth 2004/09 
 # Differences from WinAVR 20040720 sample:
 # - DEPFLAGS according to Eric Weddingtion's fix (avrfreaks/gcc-forum)
-# - F_OSC Define in CFLAGS and AFLAGS
+# - F_CPU Define in CFLAGS and AFLAGS
 
 
 # MCU name
 MCU = atmega328p
 
 # Main Oscillator Frequency
-# This is only used to define F_OSC in all assembler and c-sources.
-F_OSC = 16000000
+# This is only used to define F_CPU in all assembler and c-sources.
+F_CPU = 16000000
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex
@@ -52,7 +52,7 @@ TARGET = main
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c
+SRC = $(TARGET).c libWavePlay.c
 
 
 # List Assembler source files here.
@@ -79,7 +79,8 @@ DEBUG = stabs
 
 # List any extra directories to look for include files here.
 #     Each directory must be seperated by a space.
-EXTRAINCDIRS = /home/klaute/dev/avr/avrlib C:\Users\klaute\Dropbox\Privat\developing\avr\avrlib ..\..\avrlib
+EXTRAINCDIRS =../../avrlib ..\..\avrlib
+#C:\Users\klaute\Dropbox\Privat\developing\avr\avrlib 
 
 
 # Compiler flag to set the C Standard level.
@@ -111,7 +112,7 @@ CFLAGS += -Wall -Wstrict-prototypes
 CFLAGS += -Wa,-adhlns=$(<:.c=.lst)
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)
-CFLAGS += -DF_OSC=$(F_OSC)
+CFLAGS += -DF_CPU=$(F_CPU)
 CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
 CFLAGS += -Wl,--gc-sections 
@@ -125,7 +126,7 @@ CFLAGS += -Wl,--gc-sections
 #             and function names needs to be present in the assembler source
 #             files -- see avr-libc docs [FIXME: not yet described there]
 ASFLAGS = -Wa,-adhlns=$(<:.S=.lst),-gstabs 
-ASFLAGS += -DF_OSC=$(F_OSC)
+ASFLAGS += -DF_CPU=$(F_CPU)
 
 
 #Additional libraries.
