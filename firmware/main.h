@@ -17,9 +17,6 @@
  
 #define F_CPU 16000000UL
 
-#define LW_START_ALL_TIMER 6
-#define LW_STOP_ALL_TIMER 7
-
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
@@ -28,7 +25,7 @@
 
 #include "lcd_lib.h"
 #include "minimexle.h"
-#include "libWave.h"
+#include "libWavePlay.h"
 
 //volatile uint16_t wavepos = 0;
 

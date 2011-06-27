@@ -39,7 +39,7 @@ int main(void) {
     
     do {
     
-        if ( lw_isPlaying() == 1 && lw_isPlaying() != tmpPlaying ) {
+        if ( lwp_isPlaying() == 1 && lwp_isPlaying() != tmpPlaying ) {
             lcd_gotoxy(0,1);
             lcd_putstr(btn_stop);
 
@@ -48,9 +48,9 @@ int main(void) {
             lcd_gotoxy(0,0);
             lcd_putstr(son);
             
-            tmpPlaying = lw_isPlaying();
+            tmpPlaying = lwp_isPlaying();
             
-        } else if ( lw_isPlaying() == 0 && lw_isPlaying() != tmpPlaying ) {
+        } else if ( lwp_isPlaying() == 0 && lwp_isPlaying() != tmpPlaying ) {
             lcd_gotoxy(0,1);
             lcd_putstr(btn_start);
 
@@ -59,19 +59,19 @@ int main(void) {
             lcd_gotoxy(0,0);
             lcd_putstr(soff);
             
-            tmpPlaying = lw_isPlaying();
+            tmpPlaying = lwp_isPlaying();
             
         }
     
         // check if button 1 is pressed
         if ( mm_btnchk(PC0) ) {
 
-            lw_Play(0);
+            lwp_Play(0);
             
         } // check if button 2 is pressed
         else if ( mm_btnchk(PC1) ) {
 
-            lw_Stop();
+            lwp_Stop();
 
         }
 
@@ -110,7 +110,7 @@ void init(void)
 
     lcd_init();
 
-    lw_init();
+    lwp_init();
     
     sei(); // Interrupts aktivieren.
 

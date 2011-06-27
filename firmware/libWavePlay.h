@@ -20,18 +20,21 @@
 #include <avr/interrupt.h>
 #include <stdlib.h>
 
-volatile uint16_t _lw_wavePos = 0;
-volatile unsigned _lw_isPlaying = 0;
+#define LWP_START_ALL_TIMER 6
+#define LWP_STOP_ALL_TIMER 7
 
-void _lw_timerCtrl(unsigned);
-void lw_init(void);
+volatile uint16_t _lwp_wavePos = 0;
+volatile unsigned _lwp_isPlaying = 0;
 
-unsigned lw_isPlaying(void);
-void lw_Play(uint16_t);
-void lw_Pause(void);
-void lw_Stop(void);
+void _lwp_timerCtrl(unsigned);
+void lwp_init(void);
+
+unsigned lwp_isPlaying(void);
+void lwp_Play(uint16_t);
+void lwp_Pause(void);
+void lwp_Stop(void);
 
 
 #ifndef _WIN32
-#include "libWave.c"
+#include "libWavePlay.c"
 #endif

@@ -16,46 +16,46 @@
  */
  
 #ifdef _WIN32
-#include "libWave.c"
+#include "libWavePlay.c"
 #endif
 
 #include "wavedata.c" // include the wavefile data
 
-unsigned lw_isPlaying() {
-  return _lw_isPlaying;
+unsigned lwp_isPlaying() {
+  return _lwp_isPlaying;
 }
  
-void lw_Play(uint16_t pos) {
+void lwp_Play(uint16_t pos) {
 
-  _lw_wavePos = pos;
+  _lwp_wavePos = pos;
 
-  if (_lw_wavePos >= data_wav_len) {
-    _lw_wavePos = 0;
+  if (_lwp_wavePos >= data_wav_len) {
+    _lwp_wavePos = 0;
   }
   
-  _lw_timerCtrl(LW_START_ALL_TIMER);
+  _lwp_timerCtrl(LWP_START_ALL_TIMER);
 
 }
  
-void lw_Pause() {
-  if (_lw_isPlaying == 1) {
-    _lw_timerCtrl(LW_STOP_ALL_TIMER);
-    _lw_isPlaying = 0;
+void lwp_Pause() {
+  if (_lwp_isPlaying == 1) {
+    _lwp_timerCtrl(LWP_STOP_ALL_TIMER);
+    _lwp_isPlaying = 0;
   } else {
-    _lw_timerCtrl(LW_START_ALL_TIMER);
-    _lw_isPlaying = 1;
+    _lwp_timerCtrl(LWP_START_ALL_TIMER);
+    _lwp_isPlaying = 1;
   }
 }
 
-void lw_Stop() {
+void lwp_Stop() {
 
-  _lw_timerCtrl(LW_STOP_ALL_TIMER);
-  _lw_wavePos = 0;
-  _lw_isPlaying = 0;
+  _lwp_timerCtrl(LWP_STOP_ALL_TIMER);
+  _lwp_wavePos = 0;
+  _lwp_isPlaying = 0;
 
 }
            
-void _lw_timerCtrl(unsigned stat)
+void _lwp_timerCtrl(unsigned stat)
 {
         switch ( stat )
         {
@@ -74,9 +74,9 @@ void _lw_timerCtrl(unsigned stat)
                 break;
             case 2: // Toggle des Timers
                 if ( TCCR0B & (1 << CS00) )
-                    _lw_timerCtrl(0); // abschalten
+                    _lwp_timerCtrl(0); // abschalten
                 else
-                    _lw_timerCtrl(1); // anschalten
+                    _lwp_timerCtrl(1); // anschalten
                 break;
             case 3 :
                 // Timer stoppen
@@ -90,25 +90,25 @@ void _lw_timerCtrl(unsigned stat)
                 break;
             case 5: // Toggle des Timers
                 if ( TCCR2B & (1 << CS21) )
-                    _lw_timerCtrl(3); // abschalten
+                    _lwp_timerCtrl(3); // abschalten
                 else
-                    _lw_timerCtrl(4); // anschalten
+                    _lwp_timerCtrl(4); // anschalten
                 break;
-            case LW_START_ALL_TIMER: // start all
-                _lw_timerCtrl(1);
-                _lw_timerCtrl(4);
+            case LWP_START_ALL_TIMER: // start all
+                _lwp_timerCtrl(1);
+                _lwp_timerCtrl(4);
                 break;
-            case LW_STOP_ALL_TIMER: // stop all
-                _lw_timerCtrl(0);
-                _lw_timerCtrl(3);
+            case LWP_STOP_ALL_TIMER: // stop all
+                _lwp_timerCtrl(0);
+                _lwp_timerCtrl(3);
                 break;
             default:
-                _lw_timerCtrl(0);
-                _lw_timerCtrl(3);
+                _lwp_timerCtrl(0);
+                _lwp_timerCtrl(3);
         }
 }
 
-void lw_init() {
+void lwp_init() {
 
     // Initialisieren von Pin5 an PortB als Ausgang,
     // zum ansteuern des Summers.
@@ -143,25 +143,25 @@ void lw_init() {
 ISR (TIMER2_COMPA_vect)
 {
 
-    if (_lw_wavePos >= data_wav_len) {
+    if (_lwp_wavePos >= data_wav_len) {
 
-        _lw_wavePos = 0; // fuer die Endlosschleife und den neustart
+        _lwp_wavePos = 0; // fuer die Endlosschleife und den neustart
         
-        _lw_timerCtrl(LW_STOP_ALL_TIMER);
+        _lwp_timerCtrl(LWP_STOP_ALL_TIMER);
 
-        _lw_isPlaying = 0;
+        _lwp_isPlaying = 0;
         
     } else {
     
         // Ein Byte nach dem anderen aus dem FLASH auslesen.
-        uint8_t val = pgm_read_byte(&data_wav[_lw_wavePos]);
+        uint8_t val = pgm_read_byte(&data_wav[_lwp_wavePos]);
         
         OCR0A = val; // Neuen Vergleichswert festlegen
         OCR0B = val;
 
     }
     
-    _lw_wavePos++; // index des aktuallen samples inkrementieren    
+    _lwp_wavePos++; // index des aktuallen samples inkrementieren
 
 }
 
