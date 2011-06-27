@@ -21,6 +21,7 @@ int main(void) {
 
     init(); // init hardware
 
+#if AVR_BOARD == BOARD_MINIMEXLE
     // clear display
     _delay_ms(0xff);
     lcd_clearDisplay();
@@ -32,6 +33,7 @@ int main(void) {
 
     lcd_gotoxy(0,1);
     lcd_putstr(btn_start);
+#endif
     
     //uint16_t cnt = 0;
 
@@ -40,6 +42,7 @@ int main(void) {
     do {
     
         if ( lwp_isPlaying() == 1 && lwp_isPlaying() != tmpPlaying ) {
+#if AVR_BOARD == BOARD_MINIMEXLE
             lcd_gotoxy(0,1);
             lcd_putstr(btn_stop);
 
@@ -47,10 +50,12 @@ int main(void) {
             
             lcd_gotoxy(0,0);
             lcd_putstr(son);
+#endif
             
             tmpPlaying = lwp_isPlaying();
             
         } else if ( lwp_isPlaying() == 0 && lwp_isPlaying() != tmpPlaying ) {
+#if AVR_BOARD == BOARD_MINIMEXLE
             lcd_gotoxy(0,1);
             lcd_putstr(btn_start);
 
@@ -58,11 +63,13 @@ int main(void) {
         
             lcd_gotoxy(0,0);
             lcd_putstr(soff);
+#endif
             
             tmpPlaying = lwp_isPlaying();
             
         }
     
+#if AVR_BOARD == BOARD_MINIMEXLE
         // check if button 1 is pressed
         if ( mm_btnchk(PC0) ) {
 
@@ -74,6 +81,21 @@ int main(void) {
             lwp_Stop();
 
         }
+#else
+    if ( tmpPlaying == 0 ) {
+        _delay_ms(100);
+        _delay_ms(100);
+        _delay_ms(100);
+        _delay_ms(100);
+        _delay_ms(100);
+        _delay_ms(100);
+        _delay_ms(100);
+        _delay_ms(100);
+        _delay_ms(100);
+        _delay_ms(100);
+        lwp_Play(0); // start playing
+    }
+#endif
 
     } while (1==1);
 
@@ -83,6 +105,8 @@ int main(void) {
 
 void init(void)
 {
+
+#if AVR_BOARD == BOARD_MINIMEXLE
 
     // Alle Ports auf std. Werte setzen.
     DDRB = 0xFF;
@@ -109,6 +133,7 @@ void init(void)
     PORTC |= ( 1 << PC0 );
 
     lcd_init();
+#endif
 
     lwp_init();
     

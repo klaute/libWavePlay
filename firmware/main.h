@@ -15,7 +15,13 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
  
+#ifndef F_CPU
 #define F_CPU 16000000UL
+#endif
+
+#define BOARD_MINIMEXLE   1
+#define BOARD_OTHER       2
+#define AVR_BOARD BOARD_MINIMEXLE
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
@@ -23,16 +29,29 @@
 #include <util/delay.h>
 #include <stdlib.h>
 
+#if AVR_BOARD == BOARD_MINIMEXLE
 #include "lcd_lib.h"
 #include "minimexle.h"
-#include "libWavePlay.h"
+#endif
 
-//volatile uint16_t wavepos = 0;
-
+#if AVR_BOARD == BOARD_MINIMEXLE
 char       *son = "playing "; // sound on message
 char      *soff = "stopped "; // sound off message
 char *btn_start = "[start] [    ]";
 char  *btn_stop = "[     ] [stop]";
+#endif
 
 void init(void);
+
+extern volatile uint16_t _lwp_wavePos;
+extern volatile unsigned _lwp_isPlaying;
+
+extern void lwp_init(void);
+
+extern unsigned lwp_isPlaying(void);
+extern void lwp_Play(uint16_t);
+extern void lwp_Pause(void);
+extern void lwp_Stop(void);
+
+
 

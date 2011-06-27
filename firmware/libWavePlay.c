@@ -15,9 +15,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
  
-#ifdef _WIN32
-#include "libWavePlay.c"
-#endif
+#include "libWavePlay.h"
 
 #if WAVE_SOURCE == SRC_FLASH
 #include "wavedata.c" // include the wavefile data
@@ -30,12 +28,20 @@ unsigned lwp_isPlaying() {
 void lwp_Play(uint16_t pos) {
 
   _lwp_wavePos = pos;
+#ifdef WAVE_SOURCE
 
+#if WAVE_SOURCE == SRC_EEPROM
   if (_lwp_wavePos >= data_wav_len) {
+#endif
+#if WAVE_SOURCE == SRC_FLASH
+  if (_lwp_wavePos >= data_wav_len) {
+#endif
     _lwp_wavePos = 0;
   }
   
   _lwp_timerCtrl(LWP_START_ALL_TIMER);
+
+#endif // close ifdev wave_source
 
 }
  
@@ -139,6 +145,10 @@ void lwp_init() {
     TCNT0 = 1;
     TCNT2 = 1;
     
+#if WAVE_SOURCE == SRC_EEPROM
+    // read the eeprom wave length from eeprom
+    data_wave_len = eeprom_read_byte(eep_data_wave_len);
+#endif
     sei();
 
 }
@@ -146,7 +156,14 @@ void lwp_init() {
 ISR (TIMER2_COMPA_vect)
 {
 
+#ifdef WAVE_SOURCE
+
+#if WAVE_SOURCE == SRC_EEPROM
     if (_lwp_wavePos >= data_wav_len) {
+#endif
+#if WAVE_SOURCE == SRC_FLASH
+    if (_lwp_wavePos >= data_wav_len) {
+#endif
 
         _lwp_wavePos = 0; // fuer die Endlosschleife und den neustart
         
@@ -171,5 +188,8 @@ ISR (TIMER2_COMPA_vect)
     
     _lwp_wavePos++; // index des aktuallen samples inkrementieren
 
+#endif // close ifdef wave_source
+
 }
+
 
