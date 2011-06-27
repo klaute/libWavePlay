@@ -4,6 +4,11 @@
 #-r 11025 \
 #-r 8000 \
 
+if [ "$TERM" = "cygwin" ]; then
+    echo "Not working with cygwin!!!"
+    exit 1;
+fi
+
 IN=$1
 OUTSMALL=${IN/.wav/_small.wav}
 OUTNOHEADER=${IN/.wav/_noheader.wav}
