@@ -9,6 +9,14 @@ if [ "$TERM" = "cygwin" ]; then
     exit 1;
 fi
 
+if [ "$1" = "1" ]; then
+    KHZ=8000
+elif [ "$1" == "2" ]; then
+    KHZ=11025;
+else
+    KHZ=8000
+fi
+
 IN=$1
 OUTSMALL=${IN/.wav/_small.wav}
 OUTNOHEADER=${IN/.wav/_noheader.wav}
@@ -20,7 +28,7 @@ $IN \
 --endian little \
 -c 1 \
 -1 \
--r 8000 \
+-r $KHZ \
 $OUTSMALL \
 polyphase
 
@@ -32,7 +40,10 @@ echo "$OUTNOHEADER generated..."
 
 
 cp $OUTNOHEADER data.wav
-xxd -i data.wav | sed -e "s/unsigned char/prog_char/ig" | sed -e "s/wav_data/data_wav/ig" > wavedata.c
+xxd -i data.wav | sed -e "s/unsigned char/prog_char/ig" | \
+sed -e "s/wav_data/data_wav/ig" > wavedata.c
+
 rm data.wav
 
 echo "wavedata.c generated..."
+
