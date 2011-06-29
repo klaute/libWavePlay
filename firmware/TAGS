@@ -1,51 +1,50 @@
 
 libWavePlay.c,297
-unsigned lwp_isPlaying() {lwp_isPlaying24,902
-void lwp_Play(uint16_t pos) {lwp_Play28,958
-void lwp_Pause() {lwp_Pause48,1288
-void lwp_Stop() {lwp_Stop58,1483
-void _lwp_timerCtrl(unsigned stat)_lwp_timerCtrl66,1597
-void lwp_init() {lwp_init120,3565
-ISR (TIMER2_COMPA_vect)ISR156,4508
+unsigned lwp_isPlaying() {lwp_isPlaying22,876
+void lwp_Play(uint16_t pos) {lwp_Play26,932
+void lwp_Pause() {lwp_Pause47,1284
+void lwp_Stop() {lwp_Stop57,1479
+void _lwp_timerCtrl(unsigned stat)_lwp_timerCtrl65,1593
+void lwp_init() {lwp_init110,3429
+ISR (TIMER2_COMPA_vect)ISR144,4273
 
 main.c,59
 int main(void) {main20,807
-void init(void)init106,2518
+void init(void)init106,2468
 
-wavedata.c,98
-prog_char data_wav[] = {data_wav1,0
-unsigned int data_wav_len = 23600;data_wav_len1970,145561
+wavedata.c,0
 
 wavedata_mariopipe.c,95
 prog_char data_wav[] = {data_wav1,0
 unsigned int data_wav_len = 5898;data_wav_len495,36399
 
-libWavePlay.h,905
-#define _LIB_WAVE_PLAY_H__LIB_WAVE_PLAY_H_19,813
-#define SRC_FLASH SRC_FLASH32,992
-#define SRC_EEPROM SRC_EEPROM33,1022
-#define WAVE_SOURCE WAVE_SOURCE35,1053
-#define EEMEM EEMEM48,1320
-#define EEP_WAVE_DATA_SIZE EEP_WAVE_DATA_SIZE51,1381
-#define LWP_STOP_TIMER0 LWP_STOP_TIMER055,1461
-#define LWP_STOP_TIMER2 LWP_STOP_TIMER256,1491
-#define LWP_START_TIMER0 LWP_START_TIMER057,1521
-#define LWP_START_TIMER2 LWP_START_TIMER258,1551
-#define LWP_TOGGLE_TIMER0 LWP_TOGGLE_TIMER059,1581
-#define LWP_TOGGLE_TIMER2 LWP_TOGGLE_TIMER260,1611
-#define LWP_START_ALL_TIMER LWP_START_ALL_TIMER61,1641
-#define LWP_STOP_ALL_TIMER LWP_STOP_ALL_TIMER62,1671
-volatile uint16_t _lwp_wavePos   = 0;_lwp_wavePos64,1702
-volatile unsigned _lwp_isPlaying = 0;_lwp_isPlaying65,1740
-volatile uint16_t data_wave_len;data_wave_len68,1809
-EEMEM uint8_t data_wav[EEP_WAVE_DATA_SIZE];data_wav69,1842
+libWavePlay.h,930
+#define __lib_wave_play_h____lib_wave_play_h__19,815
+#define SRC_FLASH SRC_FLASH32,996
+#define SRC_EEPROM SRC_EEPROM33,1026
+#define WAVE_SOURCE WAVE_SOURCE36,1077
+#define EEMEM EEMEM50,1351
+#define EEP_WAVE_DATA_SIZE EEP_WAVE_DATA_SIZE53,1412
+#define LWP_STOP_TIMER0 LWP_STOP_TIMER057,1496
+#define LWP_STOP_TIMER2 LWP_STOP_TIMER258,1526
+#define LWP_START_TIMER0 LWP_START_TIMER059,1556
+#define LWP_START_TIMER2 LWP_START_TIMER260,1586
+#define LWP_TOGGLE_TIMER0 LWP_TOGGLE_TIMER061,1616
+#define LWP_TOGGLE_TIMER2 LWP_TOGGLE_TIMER262,1646
+#define LWP_START_ALL_TIMER LWP_START_ALL_TIMER63,1676
+#define LWP_STOP_ALL_TIMER LWP_STOP_ALL_TIMER64,1706
+volatile uint16_t _lwp_wavePos   = 0;_lwp_wavePos66,1737
+volatile unsigned _lwp_isPlaying = 0;_lwp_isPlaying67,1775
+volatile uint16_t data_wave_len = EEP_WAVE_DATA_SIZE;data_wave_len70,1844
+EEMEM uint8_t data_wav[EEP_WAVE_DATA_SIZE];data_wav71,1898
 
-main.h,385
+main.h,424
 #define F_CPU F_CPU19,802
-#define BOARD_MINIMEXLE BOARD_MINIMEXLE22,835
-#define BOARD_OTHER BOARD_OTHER23,863
-#define AVR_BOARD AVR_BOARD24,891
-char       *son = "playing "; // sound on messageson38,1162
-char      *soff = "stopped "; // sound off messagesoff39,1212
-char *btn_start = "[start] [    ]";btn_start40,1263
-char  *btn_stop = "[     ] [stop]";btn_stop41,1299
+#define BOARD_MINIMEXLE BOARD_MINIMEXLE30,979
+#define BOARD_OTHER BOARD_OTHER31,1007
+#define AVR_BOARD AVR_BOARD33,1036
+#define AVR_BOARD AVR_BOARD36,1089
+char       *son = "playing "; // sound on messageson43,1205
+char      *soff = "stopped "; // sound off messagesoff44,1255
+char *btn_start = "[start] [    ]";btn_start45,1306
+char  *btn_stop = "[     ] [stop]";btn_stop46,1342
