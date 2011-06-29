@@ -52,7 +52,7 @@ TARGET = main
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c libWavePlay.c
+SRC = $(TARGET).c
 
 
 # List Assembler source files here.
@@ -107,12 +107,13 @@ CINCS =
 CFLAGS = -g$(DEBUG)
 CFLAGS += $(CDEFS) $(CINCS)
 CFLAGS += -O$(OPT)
-CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 CFLAGS += -Wall -Wstrict-prototypes
 CFLAGS += -Wa,-adhlns=$(<:.c=.lst)
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)
 CFLAGS += -DF_CPU=$(F_CPU)
+CFLAGS += -funsigned-char -funsigned-bitfields
+CFLAGS +=  -fpack-struct -fshort-enums
 CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
 CFLAGS += -Wl,--gc-sections 
@@ -132,22 +133,22 @@ ASFLAGS += -DF_CPU=$(F_CPU)
 #Additional libraries.
 
 # Minimalistic printf version
-PRINTF_LIB_MIN = -Wl,-u,vfprintf -lprintf_min
+PRINTF_LIB_MIN = #-Wl,-u,vfprintf -lprintf_min
 
 # Floating point printf version (requires MATH_LIB = -lm below)
-PRINTF_LIB_FLOAT = -Wl,-u,vfprintf -lprintf_flt
+PRINTF_LIB_FLOAT = #-Wl,-u,vfprintf -lprintf_flt
 
 PRINTF_LIB = 
 
 # Minimalistic scanf version
-SCANF_LIB_MIN = -Wl,-u,vfscanf -lscanf_min
+SCANF_LIB_MIN = #-Wl,-u,vfscanf -lscanf_min
 
 # Floating point + %[ scanf version (requires MATH_LIB = -lm below)
-SCANF_LIB_FLOAT = -Wl,-u,vfscanf -lscanf_flt
+SCANF_LIB_FLOAT = #-Wl,-u,vfscanf -lscanf_flt
 
 SCANF_LIB = 
 
-MATH_LIB = -lm
+MATH_LIB = #-lm
 
 # External memory options
 
