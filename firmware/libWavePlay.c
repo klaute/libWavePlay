@@ -15,8 +15,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
  
-#include "libWavePlay.h"
-
 #if WAVE_SOURCE == SRC_FLASH
 #include "wavedata.c" // include the wavefile data
 #endif
@@ -39,6 +37,7 @@ void lwp_Play(uint16_t pos) {
     _lwp_wavePos = 0;
   }
   
+  _lwp_isPlaying = 1;
   _lwp_timerCtrl(LWP_START_ALL_TIMER);
 
 #endif // close ifdev wave_source
@@ -112,8 +111,10 @@ void lwp_init() {
 
     // Initialisieren von Pin5 an PortB als Ausgang,
     // zum ansteuern des Summers.
-    DDRB &= ~( 1 << PB5 ); // OC0B
-    DDRB &= ~( 1 << PB6 ); // OC0A
+    DDRD |= (1 << PD5); // OC0B
+    DDRD |= (1 << PD6); // OC0A
+    PORTD &= ~(1 << PD5);
+    PORTD &= ~(1 << PD6);
 
     // Timer0 initialisieren
     TCCR0A = 0x00;

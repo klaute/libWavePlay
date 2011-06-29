@@ -15,8 +15,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _LIB_WAVE_PLAY_H_
-#define _LIB_WAVE_PLAY_H_
+#ifndef __lib_wave_play_h__
+#define __lib_wave_play_h__
 
 #if F_CPU != 16000000
 #error 16MHz supported only!
@@ -50,7 +50,7 @@
 #define EEMEM  __attribute__ ((section (".eeprom")))
 #endif
 
-#define EEP_WAVE_DATA_SIZE 1024 // size in bytes of the wave in eeprom
+#define EEP_WAVE_DATA_SIZE 1024 // size in bytes of the wavedata in eeprom
 
 #endif
 
@@ -79,5 +79,9 @@ void lwp_Play(uint16_t);
 void lwp_Pause(void);
 void lwp_Stop(void);
 
+#include "libWavePlay.c"
+
 #endif
+
+
 

@@ -36,8 +36,11 @@ int main(void) {
 #endif
     
     //uint16_t cnt = 0;
-
     unsigned tmpPlaying = 0;
+
+#if AVR_BOARD == BOARD_OTHER
+    lwp_Play(0);
+#endif
     
     do {
     
@@ -49,7 +52,7 @@ int main(void) {
             lcd_putstr(btn_stop);
 
             _delay_ms(10);
-            
+
             lcd_gotoxy(0,0);
             lcd_putstr(son);
 #endif
@@ -83,19 +86,13 @@ int main(void) {
             lwp_Stop();
 
         }
-#else
+#endif
+
+#if AVR_BOARD == BOARD_OTHER
     if ( tmpPlaying == 0 ) {
-        _delay_ms(100);
-        _delay_ms(100);
-        _delay_ms(100);
-        _delay_ms(100);
-        _delay_ms(100);
-        _delay_ms(100);
-        _delay_ms(100);
-        _delay_ms(100);
-        _delay_ms(100);
-        _delay_ms(100);
-        
+        for (uint8_t i=0; i<10;i++)
+          _delay_ms(100);
+            
         lwp_Play(0); // start playing
     }
 #endif
@@ -120,8 +117,8 @@ void init(void)
     PORTC = 0x00;
     PORTD = 0x00;
 
-    // LED einschalten
-    PORTB |= ( 1 << PB2 ); 
+    // LED ausschalten
+    PORTB |= (1 << PB2); 
 
     // Alle Taster als Eingang.
     DDRC &= ( ~( 1 << PC3 ) );
