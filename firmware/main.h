@@ -40,10 +40,11 @@
 #include "lcd_lib.h"
 #include "minimexle.h"
 
-char       *son = "playing "; // sound on message
-char      *soff = "stopped "; // sound off message
-char *btn_start = "[start] [    ]";
-char  *btn_stop = "[     ] [stop]";
+char       *son = "playing"; // sound on message
+char      *soff = "stopped"; // sound off message
+char    *spause = "pause  "; // sound paused message
+char *btn_start = "[play ] [    ]";
+char  *btn_stop = "[pause] [stop]";
 #endif
 
 void init(void);

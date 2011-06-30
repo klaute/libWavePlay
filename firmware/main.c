@@ -41,11 +41,11 @@ int main(void) {
 #if AVR_BOARD == BOARD_OTHER
     lwp_Play(0);
 #endif
-    
+
     do {
-    
+
         unsigned tmpPlayingCmp = lwp_isPlaying();
-    
+
         if ( tmpPlayingCmp == 1 && tmpPlayingCmp != tmpPlaying ) {
 #if AVR_BOARD == BOARD_MINIMEXLE
             lcd_gotoxy(0,1);
@@ -56,30 +56,48 @@ int main(void) {
             lcd_gotoxy(0,0);
             lcd_putstr(son);
 #endif
-            
+
             tmpPlaying = tmpPlayingCmp;
-            
+
         } else if ( tmpPlayingCmp == 0 && tmpPlayingCmp != tmpPlaying ) {
 #if AVR_BOARD == BOARD_MINIMEXLE
             lcd_gotoxy(0,1);
             lcd_putstr(btn_start);
 
             _delay_ms(10);
-        
+
             lcd_gotoxy(0,0);
             lcd_putstr(soff);
 #endif
-            
+
             tmpPlaying = tmpPlayingCmp;
-            
+
+        } else if ( tmpPlayingCmp == 2 && tmpPlayingCmp != tmpPlaying ) {
+#if AVR_BOARD == BOARD_MINIMEXLE
+            lcd_gotoxy(0,1);
+            lcd_putstr(btn_stop);
+
+            _delay_ms(10);
+
+            lcd_gotoxy(0,0);
+            lcd_putstr(soff);
+#endif
+
+            tmpPlaying = tmpPlayingCmp;
+
         }
     
 #if AVR_BOARD == BOARD_MINIMEXLE
         // check if button 1 is pressed
         if ( mm_btnchk(PC0) ) {
 
-            lwp_Play(0);
-            
+            if ( tmpPlaying == 0 ) {
+              lwp_Play(0);
+            } else if (tmpPlaying >= 1) {
+              // The wav is paused or the musig is playing
+              lwp_Pause();
+            }
+
         } // check if button 2 is pressed
         else if ( mm_btnchk(PC1) ) {
 
@@ -90,10 +108,11 @@ int main(void) {
 
 #if AVR_BOARD == BOARD_OTHER
     if ( tmpPlaying == 0 ) {
+        // sleep 1 second
         for (uint8_t i=0; i<10;i++)
           _delay_ms(100);
-            
-        lwp_Play(0); // start playing
+
+        lwp_Play(0); // start playing again
     }
 #endif
 

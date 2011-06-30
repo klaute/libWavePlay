@@ -45,13 +45,15 @@ void lwp_Play(uint16_t pos) {
 }
  
 void lwp_Pause() {
+
   if (_lwp_isPlaying == 1) {
     _lwp_timerCtrl(LWP_STOP_ALL_TIMER);
-    _lwp_isPlaying = 0;
-  } else {
+    _lwp_isPlaying = 2;
+  } else if (_lwp_isPlaying == 2) {
     _lwp_timerCtrl(LWP_START_ALL_TIMER);
     _lwp_isPlaying = 1;
   }
+
 }
 
 void lwp_Stop() {
