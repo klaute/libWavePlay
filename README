@@ -1,4 +1,5 @@
 Author:
+=======
 
 Kai Lauterbach (klaute @ gmail dot com)
 
@@ -11,3 +12,50 @@ doc: Project documentation files (incomplete).
 
 tools: A tools compilation to do some helpful things. Like converting a
        wave file to C-code.
+
+Usage:
+======
+
+If you want to play a Wave-File out of the flash:
+-------------------------------------------------
+
+1. Generate a wavedata.c file with "tools/wav2c.sh".
+
+2. Copy the generated file to the firmware directory.
+
+3. Put the following code somewhere in your code before including the library..
+
+#define WAVE_SOURCE SRC_FLASH
+
+4. Include the Library. The wavedata.c-file is autonaticaly included by the library.
+
+#include "libWavePlay.h"
+
+5. Call "lwp_init()"-function before the endless loop in your main-function.
+   This initializes the hardware and the used timers.
+   It calls sei() to enable the global interrupt handling.
+
+6. Call "lwp_Play(0)" to start playing of the wavedata. The functionparameter represents
+   the startposition in the wavedata array.
+
+
+If you want to play a Wave-File out of the EEPROM:
+-------------------------------------------------
+
+It's very familiar to the previos described section.
+
+1. Generate the the wavedata.c file with the same tool a before.
+   Instead of copying this file to the firmware directory, you have to
+   put a also generated file, which is named like the inputfile but with a
+   "_noheader" before the ".wav" extension, into your EEPROM.
+2. Define the data source like this:
+
+#define WAVE_SOURCE SRC_EEPROM
+
+3. Define the data size in bytes.
+
+#define EEP_WAVE_DATA_SIZE <your wavedata size in bytes>
+
+4. Same steps as you would use the flash as source...
+
+
