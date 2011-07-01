@@ -50,7 +50,9 @@
 #define EEMEM  __attribute__ ((section (".eeprom")))
 #endif
 
+#ifndef EEP_WAVE_DATA_SIZE
 #define EEP_WAVE_DATA_SIZE 1024 // size in bytes of the wavedata in eeprom
+#endif
 
 #endif
 
